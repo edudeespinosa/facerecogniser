@@ -2,7 +2,7 @@
 import sys
 sys.path.append('/usr/local/lib/python2.7/dist-packages')
 import argparse
-import facedetector.violajones as vj
+import faceDetector.violajones as vj
 
 global image
 ap = argparse.ArgumentParser()
@@ -11,7 +11,7 @@ ap.add_argument("-i", "--image",
 args = vars(ap.parse_args())
 
 if not args.get("image", False):
-    image = './facedetector/faces.jpg'
+    image = './faceDetector/faces.jpg'
 else:
     image = (args["image"])
 

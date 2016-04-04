@@ -1,12 +1,12 @@
 import sys
 sys.path.append('/usr/local/lib/python2.7/dist-packages')
-import facerecognition.pca as pcalib
-import facerecognition.facerecutil as util
+import faceRecogniser.pca as pcalib
+import faceRecogniser.facerecutil as util
 import matplotlib.cm as cm
 
 
 # read images
-[X, y] = util.read_training_images("./facerecognition/faces")
+[X, y] = util.read_training_images("./faceRecogniser/faces")
 # perform a full pca
 [D, W, mu] = pcalib.pca(util.asRowMatrix(X), y)
 print(X)
@@ -23,7 +23,7 @@ pcalib.subplot(title=" Eigenfaces AT&T Facedatabase ", images=E, rows=5, cols=4,
 
 
 # read images
-[X, y] = util.read_training_images("./facerecognition/faces")
+[X, y] = util.read_training_images("./faceRecogniser/faces")
 # perform a full pca
 [D, W, mu] = pcalib.pca(util.asRowMatrix(X), y)
 print(X)

@@ -1,7 +1,7 @@
 import numpy as np
 import cv2
 import faceDetector.violajones as vj
-import faceDetector.facedetector as fd
+import faceDetector.faceDetector as fd
 roiPts = []
 
 class Tracker:

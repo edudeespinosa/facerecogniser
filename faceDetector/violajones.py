@@ -1,14 +1,14 @@
 # import the necessary packages
 import sys
 sys.path.append('/usr/local/lib/python2.7/dist-packages')
-import facedetector as fdlib
+import faceDetector as fdlib
 import cv2
 
 class ViolaJones:
-    def __init__(self, imagePath='./facedetector/faces.jpg', type='image'):
+    def __init__(self, imagePath='./faceDetector/faces.jpg', type='image'):
         self.type = type
-        self.face_cascade = cv2.CascadeClassifier('./facedetector/haarcascade_frontalface_default.xml')
-        self.eye_cascade = cv2.CascadeClassifier('./facedetector/haarcascade_eye.xml')
+        self.face_cascade = cv2.CascadeClassifier('./faceDetector/haarcascade_frontalface_default.xml')
+        self.eye_cascade = cv2.CascadeClassifier('./faceDetector/haarcascade_eye.xml')
         print(type)
         if(type=='image'):
             self.imageToDetect = cv2.imread(imagePath)
@@ -17,7 +17,7 @@ class ViolaJones:
 
     def vj(self):
         gray = cv2.cvtColor(self.imageToDetect, cv2.COLOR_BGR2GRAY)
-        fd = fdlib.FaceDetector('./facedetector/haarcascade_frontalface_default.xml')
+        fd = fdlib.FaceDetector('./faceDetector/haarcascade_frontalface_default.xml')
         gray = cv2.cvtColor(self.imageToDetect, cv2.COLOR_BGR2GRAY)
         faces = fd.detect(gray, scaleFactor = 1.08, minNeighbors = 5,
                           minSize = (30, 30))

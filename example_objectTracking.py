@@ -1,4 +1,4 @@
-import objecttracking.objectTracking as ot
+import objectTracker.objectTracking as ot
 import argparse
 
 ap = argparse.ArgumentParser()

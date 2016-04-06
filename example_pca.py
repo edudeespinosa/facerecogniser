@@ -21,23 +21,3 @@ pcalib.subplot(title=" Eigenfaces AT&T Facedatabase ", images=E, rows=5, cols=4,
         sptitle="Eigenface ", colormap=cm.jet,
         filename="pca/python_pca_eigenfaces.png")
 
-
-# read images
-[X, y] = util.read_training_images("./faceRecogniser/faces")
-# perform a full pca
-[D, W, mu] = pcalib.pca(util.asRowMatrix(X), y)
-print(X)
-
-# reconstruction steps
-steps = [i for i in xrange(10, min(len(X), 320), 20)]
-E = []
-for i in xrange(min(len(steps), 16)):
-    numEvs = steps[i]
-    P = pcalib.project(W[:, 0: numEvs], X[0].reshape(1, -1), mu)
-    R = pcalib.reconstruct(W[:, 0: numEvs], P, mu)
-    # reshape and append to plots
-    R = R.reshape(X[0].shape)
-    E.append(util.normalize(R, 0, 255))
-pcalib.subplot(title=" Reconstruction AT&T Facedatabase ", images=E, rows=4, cols=4,
-        sptitle="Eigenvectors ", sptitles=steps, colormap=cm.gray,
-        filename="pca/python_pca_reconstruction.png")

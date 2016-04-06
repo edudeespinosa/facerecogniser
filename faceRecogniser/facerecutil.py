@@ -20,10 +20,9 @@ def read_training_images(path, sz=None):
                         im = im.resize(self.sz, Image.ANTIALIAS)
                     X.append(np.asarray(im, dtype=np.uint8))
                     y.append(c)
-                except IOError, (errno, strerror):
-                    print "I/O error({0}): {1}".format(errno, strerror)
+                except IOError as (errno, strerror): print ("I/O error({0}): {1}".format(errno, strerror))
                 except:
-                    print "Unexpected error:", sys.exc_info()[0]
+                    print ("Unexpected error:", sys.exc_info()[0])
                     raise
             c = c+1
     return [X, y]

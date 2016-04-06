@@ -11,9 +11,10 @@ import numpy as np
 import os
 import Image
 import cv2
-
+print("Reading training faces")
 [X,y] = reader("./faceRecogniser/yalefaces")
 
+print("Generating model")
 model = EigenfacesModel(X[1:], y[1:])
 
 [D, W, mu]= model.compute(X[1:], y[1:])
@@ -34,22 +35,10 @@ pca.subplot(title=" Eigenfaces Yale ", images=E, rows=4, cols=4,
         sptitle="Subject ", colormap=cm.jet,
         filename=filename)
 
+print("We will print which eigenface is the nearest neighbor between the training images and 10 random query images")
+raw_input("press any key to continue")
 
-img = mpimg.imread(filename)
-# plt.imshow(np.asarray(img))
-# plt.show()
-# raw_input("Waiting")
-# plt.clf()
 
-for i in range(0, len(X)):
-    prediction = model.predict(copy[i])
-    print("Predicted subject: "+str(prediction))
-    cv2.imshow("Subject "+str(model.predict(copy[i])), copy[i])
-    # plt.imshow(E[prediction], interpolation='nearest')
-    # plt.show()
-    cv2.waitKey(1) & 0xFF
-    # print ("expected: ", y[i], "/", "predicted:", model.predict(X[i]))
-raw_input("Waiting")
 
 fig = plt.figure()
 
@@ -69,7 +58,24 @@ for i in xrange(0,10):
     plt.imshow(E[prediction])
 
 plt.show()
-#
+
+
+print("Now, we will shuffle the set of images and we will predict the subject based on the face")
+raw_input("Press any key to continue")
+for i in range(0, len(X)):
+    prediction = model.predict(copy[i])
+    print("Predicted subject: "+str(prediction))
+    cv2.imshow("Subject "+str(model.predict(copy[i])), copy[i])
+    # plt.imshow(E[prediction], interpolation='nearest')
+    # plt.show()
+    cv2.waitKey(1) & 0xFF
+    # print ("expected: ", y[i], "/", "predicted:", model.predict(X[i]))
+
+raw_input("press any key to continue")
+cv2.destroyAllWindows()
+
+
+
 # for i in range(0, 10):
 #     random = randint(0, 159)
 #     prediction = model.predict((copy[random]))

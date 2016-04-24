@@ -1,8 +1,10 @@
+from datetime import datetime
 import numpy as np
 import cv2
 import faceDetector.violajones as vj
 import faceDetector.faceDetector as fd
 roiPts = []
+tracking = False
 
 class Tracker:
     global roiPts
@@ -36,7 +38,7 @@ class Tracker:
         cv2.namedWindow("frame")
         cv2.setMouseCallback("frame", self.boxSelection)
         i = 0
-
+        skip = 0
         while camera.read():
             # seleccionar self.frame
             (selected, self.frame) = camera.read()
@@ -53,9 +55,10 @@ class Tracker:
 
             # ya hay objeto?
             if self.objectsToTrack:
+                skip = skip + 1
+                tracking = True
                 count = 1
                 for objectToTrack in self.objectsToTrack:
-
                     # convertir a hsv
                     hsv = cv2.cvtColor(self.frame, cv2.COLOR_BGR2HSV)
                     backProj = cv2.calcBackProject([hsv], [0], self.roiHist[count-1], [0, 180], 1)
@@ -88,9 +91,8 @@ class Tracker:
 
                     count = count+1
                 
-                print('hey')
                 if self.face != None:
-                    del self.objectsToTrack[:]
+                    # del self.objectsToTrack[:]
                     del roiPts[:]
 
             cv2.imshow("frame", self.frame)
@@ -100,7 +102,9 @@ class Tracker:
                 self.manuallySelectObject(key)
             else:
                 cv2.waitKey(1) & 0xFF
-                self.faceFinding()
+                if not self.objectsToTrack or skip == 30:
+                    self.faceFinding()
+                    skip = 0
                 # if (len(roiPts)!=0):
                 #     self.createHist()
 
@@ -156,6 +160,11 @@ class Tracker:
             h = (h-15)
             # cv2.rectangle(self.frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
             roiPts.append((x, y, x+w, y+h))
+            
+            extra_img = self.frame[y: y+h, x: x+w]
+            imgname = "./recovered/"+str(datetime.now())+str(count)+".png"
+            cv2.imwrite(imgname, extra_img)
+
 
             count = count+1
 
@@ -168,6 +177,7 @@ class Tracker:
         cv2.imshow(name, image)
         cv2.resizeWindow(name, 300, 200)
         cv2.moveWindow(name, 0, 200*faceNumber-1)
+        
 
 
     def createHist(self):

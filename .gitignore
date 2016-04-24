@@ -1,5 +1,6 @@
-./recovered/*
-!./recovered/readme.me
+# Recovered images
+recovered/*
+!recovered/readme.md
 #
 *.zip
 *.idea

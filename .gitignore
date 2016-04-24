@@ -1,5 +1,5 @@
 ./recovered/*
-!./recovered/readme
+!./recovered/readme.me
 #
 *.zip
 *.idea

@@ -13,9 +13,9 @@ class Tracker:
             self.type = 'camera'
         else:
             self.type= 'video'
-        self.objectToTrack = None
+        self.objectsToTrack = []
         self.face = face
-        self.roiHist = None
+        self.roiHist = []
         self.termCrit = (cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, 10, 1)
 
     # Seleccionar area de interes en el self.frame deseado.
@@ -52,21 +52,46 @@ class Tracker:
 
 
             # ya hay objeto?
-            if self.objectToTrack is not None:
-                # convertir a hsv
-                hsv = cv2.cvtColor(self.frame, cv2.COLOR_BGR2HSV)
-                backProj = cv2.calcBackProject([hsv], [0], self.roiHist, [0, 180], 1)
+            if self.objectsToTrack:
+                count = 1
+                for objectToTrack in self.objectsToTrack:
 
-                # aplicar camshift/meanshift
-                if self.face==None:
-                    color = (255,0,0)
-                    (r, self.objectToTrack) = cv2.meanShift(backProj, self.objectToTrack, self.termCrit)
-                else:
-                    color = (255,255,0)
-                    (r, self.objectToTrack) = cv2.CamShift(backProj, self.objectToTrack, self.termCrit)
+                    # convertir a hsv
+                    hsv = cv2.cvtColor(self.frame, cv2.COLOR_BGR2HSV)
+                    backProj = cv2.calcBackProject([hsv], [0], self.roiHist[count-1], [0, 180], 1)
 
-                x,y,w,h = self.objectToTrack
-                cv2.rectangle(self.frame, (x,y), (x+w,y+h), color,2)
+                    # aplicar camshift/meanshift
+                    if self.face==None:
+                        color = (255,0,0)
+                        (r, objectToTrack) = cv2.meanShift(backProj, objectToTrack, self.termCrit)
+                        x,y,w,h = objectToTrack
+                        x = (x+10)
+                        y = (y+10)
+                        w = (w-15)
+                        h = (h-15)
+                        cv2.rectangle(self.frame, (x,y), (x+w,y+h), color,2)
+
+                    else:
+                        color = (255,255,0)
+                        (r, objectToTrack) = cv2.CamShift(backProj, objectToTrack, self.termCrit)
+
+                        pts = np.int0(cv2.cv.BoxPoints(r))        
+                        # cv2.polylines(self.frame, [pts], True, color, 1)
+                        x,y,w,h = objectToTrack
+                        x = (x+10)
+                        y = (y+10)
+                        w = (w-15)
+                        h = (h-15)
+
+                        extra_img = self.frame[y: y+h, x: x+w]
+                        self.faceInWindow(count, extra_img)
+
+                    count = count+1
+                
+                print('hey')
+                if self.face != None:
+                    del self.objectsToTrack[:]
+                    del roiPts[:]
 
             cv2.imshow("frame", self.frame)
             # Esperar a que se presione tecla
@@ -104,9 +129,9 @@ class Tracker:
             roi = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
 
             # obtener histograma de colores y normalizar
-            self.roiHist = cv2.calcHist([roi], [0], None, [16], [0, 180])
-            self.roiHist = cv2.normalize(self.roiHist, self.roiHist, 0, 255, cv2.NORM_MINMAX)
-            self.objectToTrack = (tl[0], tl[1], br[0], br[1])
+            rh = cv2.calcHist([roi], [0], None, [16], [0, 180])
+            self.roiHist.append(cv2.normalize(rh, rh, 0, 255, cv2.NORM_MINMAX))
+            self.objectsToTrack.append((tl[0], tl[1], br[0], br[1]))
 
         # salir del programa
         elif key == ord("q"):
@@ -114,6 +139,7 @@ class Tracker:
 
     def faceFinding(self):
         global roiPts
+        self.objectsToTrack = []
         orig = self.frame.copy()
         violajones = vj.ViolaJones(self.frame, 'Video')
         faceRects = violajones.vj()
@@ -121,18 +147,34 @@ class Tracker:
         # #Aplicar Viola jones. Transformar a gris
         # gray = cv2.cvtColor(self.frame, cv2.COLOR_BGR2GRAY)
         # faceRects = fd.detect(gray, scaleFactor = 1.1, minNeighbors = 5, minSize = (10, 10))
+        print("Total faces : "+str(len(faceRects)))
+        count = 1
         for (x, y, w, h) in faceRects:
-            cv2.rectangle(self.frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+            x = (x+10)
+            y = (y+10)
+            w = (w-15)
+            h = (h-15)
+            # cv2.rectangle(self.frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
             roiPts.append((x, y, x+w, y+h))
+
+            count = count+1
+
             ## append points from violajones
             #show the detected faces
         self.createHist()
 
+    def faceInWindow(self, faceNumber, image):
+        name = "face "+str(faceNumber)
+        cv2.imshow(name, image)
+        cv2.resizeWindow(name, 300, 200)
+        cv2.moveWindow(name, 0, 200*faceNumber-1)
+
+
     def createHist(self):
+        global roiPts
         i = 1
         orig = self.frame.copy()
         for rp in roiPts:
-            i = i+1
             # Grab the ROI for the bounding box by cropping and convert it
             # to the HSV color space.
             roi = orig[rp[1]:rp[-1], rp[0]:rp[2]]
@@ -142,5 +184,6 @@ class Tracker:
             # bounding box
             rh = cv2.calcHist([roi], [0], None, [16], [0, 180])
             rh = cv2.normalize(rh, rh, 0, 255, cv2.NORM_MINMAX)
-            self.objectToTrack = (rp[0], rp[1], rp[2], rp[-1])
-            self.roiHist=rh;
+            self.objectsToTrack.append((rp[0], rp[1], rp[2], rp[-1]))
+            self.roiHist.append(rh)
+            i = i+1

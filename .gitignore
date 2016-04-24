@@ -2,7 +2,7 @@
 *.zip
 *.idea
 *.pgm
-
+*/yalefaces
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

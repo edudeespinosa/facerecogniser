@@ -18,6 +18,5 @@ for i in xrange(min(len(X), 20)):
     E.append(util.normalize(e, 0, 255))
 # plot them and store the plot to " python_eigenfaces.pdf"
 pcalib.subplot(title=" Eigenfaces AT&T Facedatabase ", images=E, rows=5, cols=4,
-        sptitle="Eigenface ", colormap=cm.jet,
-        filename="pca/python_pca_eigenfaces.png")
-
+               sptitle="Eigenface ", colormap=cm.jet,
+               filename="pca/python_pca_eigenfaces.png")

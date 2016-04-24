@@ -7,7 +7,7 @@ import faceDetector.violajones as vj
 global image
 ap = argparse.ArgumentParser()
 ap.add_argument("-i", "--image",
-    help = "Ruta de la imagen")
+                help="Ruta de la imagen")
 args = vars(ap.parse_args())
 
 if not args.get("image", False):
@@ -18,5 +18,3 @@ else:
 
 violajones = vj.ViolaJones(image)
 violajones.vj()
-
-

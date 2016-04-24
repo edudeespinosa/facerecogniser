@@ -12,22 +12,22 @@ import os
 import Image
 import cv2
 print("Reading training faces")
-# uncomment to use Yale faces 
+# uncomment to use Yale faces
 # [X,y, filenames] = reader("./faceRecogniser/yalefaces", [320, 240])
 
 
 # uncomment to use ATT faces
-[X,y, filenames] = reader("./faceRecogniser/faces", [92, 112])
+[X, y, filenames] = reader("./faceRecogniser/faces", [92, 112])
 
 print("Generating model")
 model = EigenfacesModel(X[1:], y[1:])
 
-[D, W, mu]= model.compute(X[1:], y[1:])
+[D, W, mu] = model.compute(X[1:], y[1:])
 
 copy = X
 
 # shuffle(copy)
-E=[]
+E = []
 
 
 # For Yale faces
@@ -41,21 +41,22 @@ for i in xrange(0, 42):
     E.append(image)
 
 
-filename="./pca/python_pca_eigenfaces.png"
+filename = "./pca/python_pca_eigenfaces.png"
 
 
-print("We will print which eigenface is the nearest neighbor between the training images and 10 random query images")
+print(
+    "We will print which eigenface is the nearest neighbor " +
+    "between the training images and 10 random query images")
 raw_input("press any key to continue")
-
 
 
 fig = plt.figure()
 
-for i in range ( 0, len(filenames) ):
+for i in range(0, len(filenames)):
     filenames[i] = filenames[i].split("faces/s")[1]
 
 
-################ Show eigenfaces
+# Show eigenfaces
 # # For Yale faces
 # pca.subplot(title=" Eigenfaces Yale ", images=E, rows=4, cols=4,
 
@@ -65,10 +66,10 @@ for i in range ( 0, len(filenames) ):
 #         filename=filename)
 
 shuffle(X)
-for i in xrange(0,10):
+for i in xrange(0, 10):
     random = randint(0, len(X))
     # while (model.predict(X[random])!= 23):
-        # random = randint(0, len(X))
+    # random = randint(0, len(X))
     prediction = model.predict(X[random])
     subject = filenames[prediction]
     ax0 = fig.add_subplot(10, 2, ((i*2)+1))
@@ -89,7 +90,9 @@ for i in xrange(0,10):
 plt.show()
 
 shuffle(X)
-print("Now, we will shuffle the set of images and we will predict the subject based on the face")
+print(
+    "Now, we will shuffle the set of images and we will " +
+    "predict the subject based on the face")
 raw_input("Press any key to continue")
 for i in range(0, len(X)):
     prediction = model.predict(copy[i])
@@ -105,7 +108,6 @@ raw_input("press any key to continue")
 cv2.destroyAllWindows()
 
 
-
 # for i in range(0, 10):
 #     random = randint(0, 159)
 #     prediction = model.predict((copy[random]))
@@ -117,4 +119,3 @@ cv2.destroyAllWindows()
 #
 
 cv2.waitKey(1) & 0xFF
-

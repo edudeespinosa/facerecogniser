@@ -4,7 +4,6 @@ import os
 import Image
 
 
-
 def read_training_images(path, sz=None):
     c = 0
     X, y, files = [], [], []
@@ -23,9 +22,10 @@ def read_training_images(path, sz=None):
                         im = im.resize(sz, Image.ANTIALIAS)
                     X.append(np.asarray(im, dtype=np.uint8))
                     y.append(c)
-                except IOError as (errno, strerror): print ("I/O error({0}): {1}".format(errno, strerror))
+                except IOError as (errno, strerror):
+                    print("I/O error({0}): {1}".format(errno, strerror))
                 except:
-                    print ("Unexpected error:", sys.exc_info()[0])
+                    print("Unexpected error:", sys.exc_info()[0])
                     raise
             files.append(subject_path)
             c = c+1
@@ -64,31 +64,40 @@ def normalize(X, low, high, dtype=None):
     return np.asarray(X, dtype=dtype)
 
 
-class AbstractDistance ( object ):
-    def __init__ ( self , name ):
+class AbstractDistance (object):
+
+    def __init__(self, name):
         self . _name = name
-        def __call__ ( self ,p ,q):
-            raise NotImplementedError (" Every AbstractDistance must implement the __call__method .")
+
+        def __call__(self, p, q):
+            raise NotImplementedError(
+                " Every AbstractDistance must implement the __call__method .")
+
     @property
-    def name ( self ) :
-        return self . _name
-    def __repr__ ( self ) :
+    def name(self):
         return self . _name
 
-class EuclideanDistance ( AbstractDistance ) :
-    def __init__ ( self ) :
-        AbstractDistance . __init__ ( self ," EuclideanDistance ")
-    def __call__ ( self , p , q):
-        p = np . asarray (p). flatten ()
-        q = np . asarray (q). flatten ()
-        return np . sqrt ( np . sum ( np . power (( p - q) ,2) ))
+    def __repr__(self):
+        return self . _name
 
 
-class CosineDistance ( AbstractDistance ):
+class EuclideanDistance (AbstractDistance):
 
-    def __init__ ( self ) :
-        AbstractDistance . __init__ ( self ," CosineDistance ")
-    def __call__ ( self , p , q):
-        p = np . asarray (p). flatten ()
-        q = np . asarray (q). flatten ()
-        return -np . dot ( p.T ,q ) / ( np . sqrt ( np . dot (p ,p.T )* np . dot (q ,q.T )))
+    def __init__(self):
+        AbstractDistance . __init__(self, " EuclideanDistance ")
+
+    def __call__(self, p, q):
+        p = np . asarray(p). flatten()
+        q = np . asarray(q). flatten()
+        return np . sqrt(np . sum(np . power((p - q), 2)))
+
+
+class CosineDistance (AbstractDistance):
+
+    def __init__(self):
+        AbstractDistance . __init__(self, " CosineDistance ")
+
+    def __call__(self, p, q):
+        p = np . asarray(p). flatten()
+        q = np . asarray(q). flatten()
+        return -np . dot(p.T, q) / (np . sqrt(np . dot(p, p.T) * np . dot(q, q.T)))

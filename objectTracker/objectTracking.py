@@ -20,6 +20,7 @@ class Tracker:
         self.objectsToTrack = []
         self.face = face
         self.roiHist = []
+        (self.sz, self.model, self.filenames) = util.initFaceRecognitionModel('ATT')
         self.termCrit = (
             cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, 10, 1)
 
@@ -103,13 +104,12 @@ class Tracker:
                 # Every 30 frames, look for new faces
                 if not self.objectsToTrack or skip == SKIP:
                     self.objectsToTrack = []
-                    util.faceFinding(roiPts, self.frame)
+                    util.faceFinding(roiPts, self.frame, self.model, self.sz, self.filenames)
                     util.createHist(
                         roiPts, self.frame, self.objectsToTrack, self.roiHist)
                     skip = 0
                 # if (len(roiPts)!=0):
                 #     self.createHist()
-
             cv2.imshow("frame", self.frame)
 
         camera.release()

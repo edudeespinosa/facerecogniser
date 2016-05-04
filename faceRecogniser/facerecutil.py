@@ -17,7 +17,6 @@ def read_training_images(path, sz=None):
                 try:
                     im = Image.open(os.path.join(subject_path, filename))
                     im = im.convert("L")
-                    # resize to given size (if given)
                     if (sz is not None):
                         im = im.resize(sz, Image.ANTIALIAS)
                     X.append(np.asarray(im, dtype=np.uint8))
@@ -53,7 +52,6 @@ def asColumnMatrix(X):
 def normalize(X, low, high, dtype=None):
     X = np.asarray(X)
     minX, maxX = np.min(X), np.max(X)
-    # normalize to [0...1].
     X = X - float(minX)
     X = X / float((maxX - minX))
     # scale to [ low...high ].

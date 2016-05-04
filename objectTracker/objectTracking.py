@@ -20,7 +20,8 @@ class Tracker:
         self.objectsToTrack = []
         self.face = face
         self.roiHist = []
-        (self.sz, self.model, self.filenames) = util.initFaceRecognitionModel('ATT')
+        if self.face != None:
+            (self.sz, self.model, self.filenames) = util.initFaceRecognitionModel('ATT')
         self.termCrit = (
             cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, 10, 1)
 

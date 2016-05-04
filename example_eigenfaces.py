@@ -89,22 +89,22 @@ for i in xrange(0, 10):
 
 plt.show()
 
-shuffle(X)
-print(
-    "Now, we will shuffle the set of images and we will " +
-    "predict the subject based on the face")
-raw_input("Press any key to continue")
-for i in range(0, len(X)):
-    prediction = model.predict(copy[i])
-    subject = filenames[prediction]
-    print("Predicted subject: "+str(subject))
-    cv2.imshow("Subject "+str(subject), copy[i])
-    # plt.imshow(E[prediction], interpolation='nearest')
-    # plt.show()
-    cv2.waitKey(1) & 0xFF
-    # print ("expected: ", y[i], "/", "predicted:", model.predict(X[i]))
+# shuffle(X)
+# print(
+#     "Now, we will shuffle the set of images and we will " +
+#     "predict the subject based on the face")
+# raw_input("Press any key to continue")
+# for i in range(0, len(X)):
+#     prediction = model.predict(copy[i])
+#     subject = filenames[prediction]
+#     print("Predicted subject: "+str(subject))
+#     cv2.imshow("Subject "+str(subject), copy[i])
+#     # plt.imshow(E[prediction], interpolation='nearest')
+#     # plt.show()
+#     cv2.waitKey(1) & 0xFF
+#     # print ("expected: ", y[i], "/", "predicted:", model.predict(X[i]))
 
-raw_input("press any key to continue")
+# raw_input("press any key to continue")
 cv2.destroyAllWindows()
 
 
